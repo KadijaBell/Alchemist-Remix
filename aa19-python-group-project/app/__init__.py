@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, send_from_directory
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -7,10 +7,15 @@ from flask_login import LoginManager
 from .models import db, User
 from .api.user_routes import user_routes
 from .api.auth_routes import auth_routes
+from .api.content_source_routes import content_source_routes
+from .api.reflection_routes import reflection_routes
+from .api.comment_routes import comment_routes
+from .api.alchemy_routes import alchemy_routes
 from .seeds import seed_commands
 from .config import Config
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
+
 
 # Setup login manager
 login = LoginManager(app)
@@ -28,6 +33,10 @@ app.cli.add_command(seed_commands)
 app.config.from_object(Config)
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
+app.register_blueprint(content_source_routes, url_prefix='/api/content_sources')
+app.register_blueprint(reflection_routes, url_prefix='/api/reflections')
+app.register_blueprint(comment_routes, url_prefix='/api/comments')
+app.register_blueprint(alchemy_routes, url_prefix='/api/alchemy')
 db.init_app(app)
 Migrate(app, db)
 
@@ -83,9 +92,14 @@ def react_root(path):
     """
     if path == 'favicon.ico':
         return app.send_from_directory('public', 'favicon.ico')
-    return app.send_static_file('index.html')
+    # return app.send_static_file('index.html')
+  # Adjust 'frontend_build' to your actual React/Vite build folder path
+    if path != "" and os.path.exists(os.path.join('../react-vite/dist', path)):
+        return send_from_directory('../react-vite/dist', path)
+    else:
+        return send_from_directory('../react-vite/dist', 'index.html')
 
 
-@app.errorhandler(404)
-def not_found(e):
-    return app.send_static_file('index.html')
+# @app.errorhandler(404)
+# def not_found(e):
+#     return app.send_static_file('index.html')

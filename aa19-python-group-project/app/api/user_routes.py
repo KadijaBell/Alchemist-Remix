@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_login import login_required
 from app.models import User
+from app.utils import get_content_source_or_404, success_response, error_response
 
 user_routes = Blueprint('users', __name__)
 
@@ -21,5 +22,7 @@ def user(id):
     """
     Query for a user by id and returns that user in a dictionary
     """
-    user = User.query.get(id)
-    return user.to_dict()
+    user = get_content_source_or_404(id, User)
+    if isinstance(user, dict): # error response
+        return user
+    return success_response("User retrieved successfully🤗",user.to_dict())
