@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from app.models import db, ContentSource, Comment, Post, Reflection
+from app.models import db, ContentSource
 from app.utils import get_content_source_or_404, success_response, error_response
 
 
@@ -14,13 +14,14 @@ def get_sources():
     page = request.args.get("page", 1, type=int)
     each_page = request.args.get("each_page", 10, type=int)
 
-    sources = ContentSource.query.paginate(page=page, per_page=each_page,error_out = False)
+    sources = ContentSource.query.paginate(page=page, per_page=each_page, error_out = False)
 
-    return success_response("Sources retrieved successfully🤗",{
+    return success_response("Sources retrieved successfully🤗",
+    {
         "sources": [source.to_dict() for source in sources.items],
         "total_pages": sources.total,
         "page": sources.page,
-        "each_page": sources.pages
+        "each_page": each_page
 
     })
 # @content_source_routes.route("/", methods=["GET"])

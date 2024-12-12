@@ -21,7 +21,7 @@ class ContentSource(db.Model):
 
     comments = db.relationship('Comment', back_populates='source', cascade="all, delete-orphan")
     reflections = db.relationship('Reflection', back_populates='source', cascade="all, delete-orphan")
-    
+
 
 
     def to_dict(self):
