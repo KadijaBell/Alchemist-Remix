@@ -6,7 +6,49 @@ reflection_routes = Blueprint("reflections", __name__)
 
 
 #             GET ROUTES               #
+#Get all reflections
+@reflection_routes.route("/", methods=["GET"])
+def get_reflections():
+    search = request.args.get("search", "")
+    page = request.args.get("page", 1, type=int)
+    each_page = request.args.get("each_page", 10, type=int)
+    sort_by = request.args.get("sort_by", "created_at")
+    order = request.args.get("order", "desc")
+    query = Reflection.query
 
+    # Search/Sort reflections by content
+    if search:
+        query = query.filter(Reflection.content.ilike(f"%{search}%"))
+    if sort_by:
+        query = query.order_by(getattr(Reflection, sort_by))
+
+    #validate sort_by
+    valid_sort_by = ["created_at", "updated_at", "name"]
+    if sort_by not in valid_sort_by:
+        return error_response("Invalid sort field. Allowed fields: created_at, updated_at, name", 400)
+
+
+    # Build sorting dynamically
+    sort_column = getattr(Reflection, sort_by, None)
+    if sort_column is None:
+        return error_response("Invalid sort column", 400)
+
+    if order == "asc":
+        sort_column = sort_column.asc()
+    else:
+        sort_column = sort_column.desc()
+
+    # Pagination
+    reflections = query.paginate(page=page, per_page=each_page, error_out=False)
+    # Query with sorting
+    reflections = Reflection.query.order_by(sort_column).paginate(page=page, per_page=each_page, error_out=False)
+
+    return success_response("Reflections retrieved successfully 🤗", {
+        "reflections": [reflection.to_dict() for reflection in reflections.items],
+        "total_pages": reflections.pages,
+        "page": reflections.page,
+        "each_page": each_page
+    })
 
 
 #Get Reflections of a source
@@ -72,4 +114,3 @@ def delete_reflection(id):
     db.session.delete(reflection)
     db.session.commit()
     return {"message": "Reflection deleted successfully"}
-

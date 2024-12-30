@@ -1,0 +1,50 @@
+.get-started-button {
+    display: inline-block;
+    padding: 15px 30px;
+    font-size: 18px;
+    color: white;
+    background-color: #ff9800;
+    text-decoration: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, background-color 0.3s;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .get-started-button:hover {
+    background-color: #e68900;
+    transform: scale(1.05);
+  }
+
+  .landing-page {
+    text-align: center;
+    padding: 50px;
+    background-color: #f9f9f9;
+  }
+
+  .landing-header h1 {
+    font-size: 3rem;
+    color: #333;
+  }
+
+  .landing-buttons {
+    margin-top: 20px;
+  }
+
+  .btn-get-started,
+  .btn-login {
+    background-color: #ff8800;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    margin: 0 10px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+
+  .btn-get-started:hover,
+  .btn-login:hover {
+    background-color: #e67000;
+  }

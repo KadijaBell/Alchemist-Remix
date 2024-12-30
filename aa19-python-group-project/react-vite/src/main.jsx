@@ -3,9 +3,9 @@ import ReactDOM from "react-dom/client";
 import { Provider as ReduxProvider } from "react-redux";
 import { RouterProvider } from "react-router-dom";
 import configureStore from "./redux/store";
-import { router } from "./router";
+import { router } from "./router/index/index.jsx";
 import * as sessionActions from "./redux/session";
-import "./index.css";
+import "./router/index/index.css";
 
 const store = configureStore();
 

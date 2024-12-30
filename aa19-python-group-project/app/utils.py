@@ -12,11 +12,23 @@ def success_response(message, data=None):
         response["data"] = data
     return jsonify(response), 200
 
-def error_response(message, status_code):
-    return jsonify({"error": message}), status_code
+def error_response(message, status_code, details=None):
+    response = {
+        "error": {
+            "message": message,
+            "status_code": status_code
+        }
+    }
+    if details:
+        response["error"]["details"] = details
+    return jsonify(response), status_code
 
-def validate_data(data, fields):
-   missing_data = [field for field in fields if field not in data]
+
+def validate_data(data, required_fields):
+   missing_data = [field for field in required_fields if field not in data]
    if missing_data:
        return error_response(f"🥲 Missing required fields: {', '.join(missing_data)}", 400)
    return None
+
+def validate_error_response(error):
+    return {"error": "Validation failed", "details": error}, 400

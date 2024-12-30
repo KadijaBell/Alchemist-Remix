@@ -10,17 +10,99 @@ const removeUser = () => ({
   type: REMOVE_USER
 });
 
-export const thunkAuthenticate = () => async (dispatch) => {
-	const response = await fetch("/api/auth/");
-	if (response.ok) {
-		const data = await response.json();
-		if (data.errors) {
-			return;
-		}
+// export const thunkAuthenticate = () => async (dispatch) => {
+// 	// const response = await fetch("/api/auth/");
+// 	// if (response.ok) {
+// 	// 	const data = await response.json();
+// 	// 	if (data.errors) {
+// 	// 		return;
+// 	// 	}
 
-		dispatch(setUser(data));
-	}
+// 	// 	dispatch(setUser(data));
+// 	// }else{
+//   //   return null;
+//   // }
+// //   const response = await fetch("/api/auth/", {
+// //       method: "GET",
+// //       headers: {
+// //         "Content-Type": "application/json",
+// //       },
+// //       credentials: "include",
+// //     });
+
+// //     if (response.ok) {
+// //       const data = await response.json();
+// //       if (data.user) {
+// //         dispatch(setUser(data.user));
+// //         return data.user;
+// //       } else {
+// //         // If no user is logged in, clear Redux state
+// //         dispatch(removeUser());
+// //         return null;
+// //       }
+// //     } else {
+// //       console.error("Unexpected error in authentication:", response);
+// //       dispatch(removeUser());
+// //       return null;
+// //     }
+// //  };
+//   console.log("Checking authentication...");
+//   const response = await fetch("/api/auth/", {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     credentials: "include",
+//   });
+
+//   if (response.ok) {
+//     const data = await response.json();
+//     console.log("Authentication response data:", data);
+//     if (data.user) {
+//       dispatch(setUser(data.user));
+//       return data.user;
+//     } else {
+//       dispatch(removeUser());
+//       return null;
+//     }
+//   } else {
+//     console.error("Unexpected error in authentication:", response);
+//     dispatch(removeUser());
+//     return null;
+//   }
+// };
+export const thunkAuthenticate = () => async (dispatch) => {
+  try {
+    const response = await fetch("/api/auth/", {
+      method: "GET",
+      credentials: "include", // Include cookies
+    });
+
+    if (!response.ok) {
+      console.error("Failed to authenticate:", response.statusText);
+      dispatch(removeUser());
+      return null;
+    }
+
+    const data = await response.json();
+    console.log("Authentication response:", data); // Debugging step
+
+    if (data.user) {
+      dispatch(setUser(data.user));
+       return data.user;
+    } else {
+      dispatch(removeUser());
+      return null;
+    }
+  } catch (error) {
+    console.error("Error during authentication:", error);
+    dispatch(removeUser());
+    return null;
+  }
 };
+
+
+
 
 export const thunkLogin = (credentials) => async dispatch => {
   const response = await fetch("/api/auth/login", {
@@ -32,9 +114,10 @@ export const thunkLogin = (credentials) => async dispatch => {
   if(response.ok) {
     const data = await response.json();
     dispatch(setUser(data));
+    return true;
   } else if (response.status < 500) {
     const errorMessages = await response.json();
-    return errorMessages
+    return { errors: errorMessages }
   } else {
     return { server: "Something went wrong. Please try again" }
   }
@@ -50,9 +133,10 @@ export const thunkSignup = (user) => async (dispatch) => {
   if(response.ok) {
     const data = await response.json();
     dispatch(setUser(data));
+    return true;
   } else if (response.status < 500) {
     const errorMessages = await response.json();
-    return errorMessages
+    return { errors: errorMessages }
   } else {
     return { server: "Something went wrong. Please try again" }
   }

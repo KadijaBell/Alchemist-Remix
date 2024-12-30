@@ -46,20 +46,40 @@ def get_source(id):
 #Searching/Filtering sources
 @content_source_routes.route("/search", methods=["GET"])
 def search_sources():
+
     search = request.args.get("search", "")
     source_filter = request.args.get("type", "")
+    page = request.args.get("page", 1, type=int)
+    each_page = request.args.get("each_page", 10, type=int)
 
+    # Start with the base query
     query = ContentSource.query
 
+    # Apply search and type filters if provided
     if search:
         query = query.filter(ContentSource.name.ilike(f"%{search}%"))
-
     if source_filter:
         query = query.filter(ContentSource.source_type == source_filter)
 
-    sources = query.all()
+    # Paginate the results
+    sources = query.paginate(page=page, per_page=each_page, error_out=False)
 
-    return {"sources": [source.to_dict() for source in sources]}
+    # Handle no results
+    if not sources.items:
+        return success_response("No sources match your search criteria.", {
+            "sources": [],
+            "total_pages": 0,
+            "page": page,
+            "each_page": each_page
+        })
+
+    # Return the paginated results
+    return success_response("Sources retrieved successfully🤗", {
+        "sources": [source.to_dict() for source in sources.items],
+        "total_pages": sources.pages,
+        "page": sources.page,
+        "each_page": each_page
+    })
 
 #             POST ROUTES               #
 

@@ -11,8 +11,12 @@ from .api.content_source_routes import content_source_routes
 from .api.reflection_routes import reflection_routes
 from .api.comment_routes import comment_routes
 from .api.alchemy_routes import alchemy_routes
+from .utils import error_response
 from .seeds import seed_commands
 from .config import Config
+from werkzeug.exceptions import HTTPException
+
+
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 
@@ -20,6 +24,7 @@ app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
 # Setup login manager
 login = LoginManager(app)
 login.login_view = 'auth.unauthorized'
+
 
 
 @login.user_loader
@@ -31,6 +36,7 @@ def load_user(id):
 app.cli.add_command(seed_commands)
 
 app.config.from_object(Config)
+
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
 app.register_blueprint(content_source_routes, url_prefix='/api/content_sources')
@@ -100,6 +106,8 @@ def react_root(path):
         return send_from_directory('../react-vite/dist', 'index.html')
 
 
-# @app.errorhandler(404)
-# def not_found(e):
-#     return app.send_static_file('index.html')
+@app.errorhandler(Exception)
+def global_handle_error(e):
+    if isinstance(e, HTTPException):
+        return error_response(e.description, e.code)
+    return error_response("An unexpected error occurred. Please try again later.", 500)
