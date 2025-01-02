@@ -104,24 +104,25 @@ export const thunkAuthenticate = () => async (dispatch) => {
 
 
 
-export const thunkLogin = (credentials) => async dispatch => {
+export const thunkLogin = (credentials) => async (dispatch) => {
   const response = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(credentials)
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credentials),
   });
 
-  if(response.ok) {
-    const data = await response.json();
-    dispatch(setUser(data));
-    return true;
+  if (response.ok) {
+      const data = await response.json();
+      dispatch(setUser(data));
+      return true;
   } else if (response.status < 500) {
-    const errorMessages = await response.json();
-    return { errors: errorMessages }
+      const errorMessages = await response.json();
+      return { errors: errorMessages.errors }; 
   } else {
-    return { server: "Something went wrong. Please try again" }
+      return { errors: { server: "Something went wrong. Please try again." } };
   }
 };
+
 
 export const thunkSignup = (user) => async (dispatch) => {
   const response = await fetch("/api/auth/signup", {

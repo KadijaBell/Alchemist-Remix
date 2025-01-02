@@ -1,0 +1,99 @@
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  /* Form header */
+  .form-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: #333;
+    text-align: center;
+    font-family: 'Merriweather', serif;
+  }
+
+  /* Form labels */
+  .form-container label {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 1rem;
+    display: block;
+    color: #555;
+  }
+
+  /* Input fields */
+  .form-container input {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: #333;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Input focus effect */
+  .form-container input:focus {
+    border-color: #fbb034;
+    box-shadow: 0 0 5px rgba(251, 176, 52, 0.8);
+    outline: none;
+  }
+
+  /* Error messages */
+  .error-message {
+    color: #ff4d4d;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+
+  /* Buttons */
+  .form-container button {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 1.5rem;
+    background-color: #ff9f1c;
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .form-container button:hover {
+    background-color: #f77f00;
+  }
+
+  /* Link buttons (e.g., switch to sign up or login) */
+  .form-container .link-button {
+    background: none;
+    border: none;
+    color: #007bff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    margin-top: 1rem;
+  }
+
+  .form-container .link-button:hover {
+    color: #0056b3;
+  }
+
+  /* Form footer */
+  .form-footer {
+    text-align: center;
+    margin-top: 1rem;
+    color: #555;
+  }

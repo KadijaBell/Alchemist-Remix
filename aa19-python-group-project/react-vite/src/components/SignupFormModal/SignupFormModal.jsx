@@ -17,30 +17,34 @@ function SignupFormModal() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({});
 
     if (password !== confirmPassword) {
       setErrors({
-        confirmPassword:
-          "✨ Your passwords must align to unlock the fusion portal! Try again.",
+        email: "✨ This email is already in use. Choose another or recover your account.",
+        username: "✨ This username is already in use. Choose another.",
+        password: "Password must contain at least one special character (!@#$%^&*(),.?\":{}|<>).",
+        confirmPassword: "✨ Your passwords must align to unlock the fusion portal! Try again.",
       });
       return
     }
 
-      if (serverResponse.errors) {
-        setErrors(serverResponse.errors);
-      } else {
-        closeModal();
-        navigate("/home");
-      }
-
-
     const serverResponse = await dispatch(
-      thunkSignup({
-        email,
-        username,
-        password,
-      })
-    );
+    thunkSignup({
+      email,
+      username,
+      password,
+    })
+  );
+
+    if (serverResponse.errors) {
+      setErrors(serverResponse.errors);
+    } else {
+      closeModal();
+      navigate("/home");
+    }
+
+
 
     if (serverResponse) {
       setErrors(serverResponse);
@@ -53,7 +57,7 @@ function SignupFormModal() {
     <>
       <h1>Sign Up</h1>
       {errors.server && <p>🧙‍♂️ {errors.server}🧝🏾‍♀️</p>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="form-container">
         <label>
           Email
           <input
