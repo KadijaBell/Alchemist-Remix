@@ -26,24 +26,8 @@ def validate_password(password):
 
 @auth_routes.route('/', methods=['GET'])
 def authenticate():
-    """
-    Authenticates a user.
-    """
-    # if current_user.is_authenticated:
-    #     return current_user.to_dict()
-    # else:
-    #     return jsonify({"user": None}), 200
 
-    # if current_user.is_authenticated:
-    #     return current_user.to_dict()
-    # return {'errors': {'message': 'Unauthorized'}}, 401
-    # print(f"User authenticated? {current_user.is_authenticated}")
-    # if current_user.is_authenticated:
-    #     print(f"Authenticated user: {current_user}")
-    #     return current_user.to_dict()
-    # print("Unauthorized request")
-    # return {'error': 'Unauthorized'}, 401
-    # print(f"User authenticated? {current_user.is_authenticated}")
+    print(f"User authenticated? {current_user.is_authenticated}")
 
     print(f"Session Data: {session}")  # Debugging step
     if current_user.is_authenticated:
@@ -55,22 +39,6 @@ def authenticate():
 
 
 
-
-# @auth_routes.route('/login', methods=['POST'])
-# def login():
-#     """
-#     Logs a user in
-#     """
-#     form = LoginForm()
-#     # Get the csrf_token from the request cookie and put it into the
-#     # form manually to validate_on_submit can be used
-#     form['csrf_token'].data = request.cookies['csrf_token']
-#     if form.validate_on_submit():
-#         # Add the user to the session, we are logged in!
-#         user = User.query.filter(User.email == form.data['email']).first()
-#         login_user(user)
-#         return user.to_dict()
-#     return form.errors, 401
 @auth_routes.route('/login', methods=['POST'])
 def login():
     """
@@ -98,29 +66,9 @@ def logout():
     return {'message': 'User logged out'}
 
 
-# @auth_routes.route('/signup', methods=['POST'])
-# def sign_up():
-#     """
-#     Creates a new user and logs them in
-#     """
-#     form = SignUpForm()
-#     form['csrf_token'].data = request.cookies['csrf_token']
-#     if form.validate_on_submit():
-#         user = User(
-#             username=form.data['username'],
-#             email=form.data['email'],
-#             password=form.data['password']
-#         )
-#         db.session.add(user)
-#         db.session.commit()
-#         login_user(user)
-#         return user.to_dict()
-#     return form.errors, 401
 @auth_routes.route('/signup', methods=['POST'])
 def sign_up():
-    """
-    Creates a new user and logs them in.
-    """
+
     form = SignUpForm()
     form['csrf_token'].data = request.cookies.get('csrf_token')
 
@@ -154,11 +102,17 @@ def sign_up():
     login_user(user)
     return jsonify(user.to_dict()), 201
 
+@auth_routes.route('/restore', methods=['GET'])
+def restore_session():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({"errors": ["Unauthorized"]}), 401
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"errors": ["User not found"]}), 404
+    return jsonify(user.to_dict()), 200
 
 
 @auth_routes.route('/unauthorized')
 def unauthorized():
-    """
-    Returns unauthorized JSON when flask-login authentication fails
-    """
-    return {'errors': {'message': 'Unauthorized'}}, 401
+    return jsonify({"error": "🔒 Your magical energies are not recognized. Please log in to continue! 🌌"}), 401

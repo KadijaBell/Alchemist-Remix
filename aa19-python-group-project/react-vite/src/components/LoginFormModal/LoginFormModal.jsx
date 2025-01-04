@@ -13,7 +13,7 @@ function LoginFormModal() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
 
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
@@ -23,9 +23,27 @@ function LoginFormModal() {
     if (serverResponse?.errors) {
         setErrors(serverResponse.errors);
     } else {
-        closeModal();
-        navigate("/home");
+      navigate("/home");
+      closeModal();
     }
+};
+const handleDemoLogin = async () => {
+  const demoEmail = "demo@example.com";
+  const demoPassword = "Password1!";
+
+  const serverResponse = await dispatch(
+    thunkLogin({
+      email: demoEmail,
+      password: demoPassword,
+    })
+  );
+
+  if (serverResponse.errors) {
+    setErrors(serverResponse.errors);
+  } else {
+    closeModal();
+    navigate("/home");
+  }
 };
 
   return (
@@ -57,6 +75,7 @@ function LoginFormModal() {
         )}
         {errors.form && <p className="error-message">{errors.form}</p>}
         <button type="submit">Log In</button>
+        <button type="button" onClick={handleDemoLogin}>Demo User</button>
       </form>
     </>
   );

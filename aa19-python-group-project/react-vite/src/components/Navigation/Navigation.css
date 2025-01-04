@@ -1,47 +1,99 @@
-.navbar {
+/* General Styles */
+ul {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f8f9fa;
-  padding: 10px 20px;
-  border-bottom: 2px solid #ccc;
-}
-
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 20px;
+  background-color: #f5f5f5;
+  padding: 0.5rem 2rem;
   margin: 0;
-  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.nav-links li {
-  font-size: 1.2rem;
+li {
+  margin: 0 1rem;
 }
 
-.nav-links a {
+a {
   text-decoration: none;
+  font-size: 3rem;
+  font-weight: 500;
   color: #333;
-  transition: color 0.2s;
+  transition: color 0.3s ease;
 }
 
-.nav-links a:hover,
-.nav-links a.active-link {
-  color: #ff7f50;
+a:hover {
+  color: #ff9800; /* Highlighted color on hover */
 }
 
+/* Profile Button */
+button {
+  background-color: #ff9800;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #e68900; /* Slightly darker shade on hover */
+}
+
+/* Dropdown Menu */
 .profile-dropdown {
   position: absolute;
-  top: 50px;
-  right: 20px;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  right: 2rem;
+  top: 3rem;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  padding: 10px;
-  z-index: 1000;
+  padding: 1rem;
+  z-index: 10;
 }
 
 .profile-dropdown li {
-  margin: 5px 0;
+  margin: 0.5rem 0;
+}
+
+.profile-dropdown button {
+  background-color: transparent;
+  color: #ff9800;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.profile-dropdown button:hover {
+  color: #e68900;
+}
+
+/* Active Link Styles */
+a.active {
+  color: #ff9800;
+  font-weight: bold;
+  border-bottom: 2px solid #ff9800;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  ul {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+
+  li {
+    margin: 0.5rem 0;
+  }
+
+  .profile-dropdown {
+    right: 1rem;
+    top: 2.5rem;
+  }
 }

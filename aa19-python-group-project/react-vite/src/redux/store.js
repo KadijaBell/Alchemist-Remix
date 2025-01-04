@@ -7,10 +7,15 @@ import {
 import thunk from "redux-thunk";
 import sessionReducer from "./session";
 import fussionsReducer from "./fusions";
+import feedReducer from "./feed";
+import postsReducer from "./posts";
+
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   fussions: fussionsReducer,
+  feed: feedReducer,
+  posts:postsReducer
 });
 
 let enhancer;

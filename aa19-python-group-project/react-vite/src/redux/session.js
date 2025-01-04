@@ -10,6 +10,8 @@ const removeUser = () => ({
   type: REMOVE_USER
 });
 
+
+
 // export const thunkAuthenticate = () => async (dispatch) => {
 // 	// const response = await fetch("/api/auth/");
 // 	// if (response.ok) {
@@ -117,7 +119,7 @@ export const thunkLogin = (credentials) => async (dispatch) => {
       return true;
   } else if (response.status < 500) {
       const errorMessages = await response.json();
-      return { errors: errorMessages.errors }; 
+      return { errors: errorMessages.errors };
   } else {
       return { errors: { server: "Something went wrong. Please try again." } };
   }
@@ -146,6 +148,22 @@ export const thunkSignup = (user) => async (dispatch) => {
 export const thunkLogout = () => async (dispatch) => {
   await fetch("/api/auth/logout");
   dispatch(removeUser());
+};
+
+export const thunkRestoreUser = () => async (dispatch) => {
+  const response = await fetch("/api/auth/restore", {
+    method: "GET",
+    credentials: "include", // Ensures cookies are sent
+  });
+
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(setUser(data));
+    return true;
+  } else {
+    dispatch(removeUser());
+    return false;
+  }
 };
 
 const initialState = { user: null };

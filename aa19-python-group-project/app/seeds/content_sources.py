@@ -38,8 +38,41 @@ def seed_content_sources():
             'name': 'CR JAY Blog',
             'source_type': 'Video',
             'url': 'https://youtu.be/DvBOZHIFFq8?si=-Qxa67gFPg6RCxbB'
-        }
-    ]
+        },
+
+    # New podcast sources
+        {
+            'name': 'The Daily',
+            'source_type': 'Podcast',
+            'url': 'https://www.nytimes.com/column/the-daily'
+        },
+        {
+            'name': 'Stuff You Should Know',
+            'source_type': 'Podcast',
+            'url': 'https://www.iheart.com/podcast/105-stuff-you-should-know-26940277/'},
+        {
+            'name': 'Revisionist History',
+            'source_type': 'Podcast',
+            'url': 'http://revisionisthistory.com/'
+        },
+
+        # New image sources
+        {
+            'name': 'Unsplash Photography',
+            'source_type': 'Image',
+            'url': 'https://unsplash.com/'
+        },
+        {
+            'name': 'Pixabay',
+            'source_type': 'Image',
+            'url': 'https://pixabay.com/'
+        },
+        {
+            'name': 'Pexels',
+            'source_type': 'Image',
+            'url': 'https://www.pexels.com/'
+        },
+]
 
     for source in content_sources:
         new_source = ContentSource(
@@ -47,17 +80,15 @@ def seed_content_sources():
             source_type=source['source_type'],
             url=source['url']
         )
-        db.session.add(new_source)
 
+    db.session.add(new_source)
     db.session.commit()
 
     return content_sources
-
 
 def undo_content_sources():
     if environment == "production":
         db.session.execute(f"TRUNCATE table {SCHEMA}.content_sources RESTART IDENTITY CASCADE;")
     else:
         db.session.execute(text("DELETE FROM content_sources"))
-
-    db.session.commit()
+        db.session.commit()

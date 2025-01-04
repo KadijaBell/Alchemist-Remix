@@ -11,6 +11,7 @@ from .api.content_source_routes import content_source_routes
 from .api.reflection_routes import reflection_routes
 from .api.comment_routes import comment_routes
 from .api.alchemy_routes import alchemy_routes
+from .api.post_routes import post_routes
 from .utils import error_response
 from .seeds import seed_commands
 from .config import Config
@@ -43,6 +44,7 @@ app.register_blueprint(content_source_routes, url_prefix='/api/content_sources')
 app.register_blueprint(reflection_routes, url_prefix='/api/reflections')
 app.register_blueprint(comment_routes, url_prefix='/api/comments')
 app.register_blueprint(alchemy_routes, url_prefix='/api/alchemy')
+app.register_blueprint(post_routes, url_prefix='/api/posts')
 db.init_app(app)
 Migrate(app, db)
 

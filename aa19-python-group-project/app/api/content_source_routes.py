@@ -6,42 +6,45 @@ from app.utils import get_content_source_or_404, success_response, error_respons
 content_source_routes = Blueprint("content_sources", __name__)
 
 
-#             GET ROUTES               #
+#          GET ROUTES         #
 
 #Get all sources
-@content_source_routes.route("/", methods=["GET"])
-def get_sources():
+@content_source_routes.route("/feed", methods=["GET"])
+def get_feed():
     page = request.args.get("page", 1, type=int)
     each_page = request.args.get("each_page", 10, type=int)
 
-    sources = ContentSource.query.paginate(page=page, per_page=each_page, error_out = False)
+    # Retrieve all ContentSources with pagination
+    sources = ContentSource.query.paginate(page=page, per_page=each_page, error_out=False)
 
-    return success_response("Sources retrieved successfully🤗",
-    {
-        "sources": [source.to_dict() for source in sources.items],
-        "total_pages": sources.total,
-        "page": sources.page,
-        "each_page": each_page
+    return success_response(
+        "Feed retrieved successfully! 🤗",
+        {
+            "sources": [source.to_dict() for source in sources.items],
+            "total_pages": sources.pages,
+            "page": sources.page,
+            "each_page": each_page,
+        },
+    )
 
-    })
-# @content_source_routes.route("/", methods=["GET"])
-# def get_sources():
-#     sources = ContentSource.query.all()
-#     return success_response("Sources retrieved successfully🤗",{"sources": [source.to_dict() for source in sources]})
-
-
-#Get a single source
+# Get a single source
 @content_source_routes.route("/<int:id>", methods=["GET"])
 def get_source(id):
     source = get_content_source_or_404(id, ContentSource)
-    if isinstance(source, ContentSource):
+    if isinstance(source, dict):
         return source
-    # if not source:
-    #     return {"error": "🥲 That creative content can't be found. Please try again."}, 404
 
     source.glances += 1
     db.session.commit()
-    return success_response("Source retrieved successfully🤗", source.to_dict())
+
+    return success_response("Source retrieved successfully 🤗", {
+        "id": source.id,
+        "name": source.name,
+        "media_type": source.media_type,
+        "url": source.url,
+        "summary": "Preview"
+    })
+
 
 #Searching/Filtering sources
 @content_source_routes.route("/search", methods=["GET"])
@@ -82,6 +85,9 @@ def search_sources():
     })
 
 #             POST ROUTES               #
+
+#retrieve the feed
+
 
 
 #Create a new source
