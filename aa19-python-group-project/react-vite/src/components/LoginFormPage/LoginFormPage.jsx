@@ -27,11 +27,11 @@ function LoginFormPage() {
     if (serverResponse.errors) {
       setErrors(serverResponse.errors);
     } else {
-      navigate("/");
+      navigate("/home");
     }
   };
 
-  
+
 
   return (
     <>

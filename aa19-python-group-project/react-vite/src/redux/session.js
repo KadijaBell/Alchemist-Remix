@@ -151,21 +151,25 @@ export const thunkLogout = () => async (dispatch) => {
 };
 
 export const thunkRestoreUser = () => async (dispatch) => {
+  try {
   const response = await fetch("/api/auth/restore", {
     method: "GET",
-    credentials: "include", // Ensures cookies are sent
+    credentials: "include",
   });
 
   if (response.ok) {
     const data = await response.json();
     dispatch(setUser(data));
-    return true;
+    return data;
   } else {
     dispatch(removeUser());
     return false;
+    }
+  } catch (error) {
+      console.error("Error restoring user session:", error);
+      dispatch(removeUser());
   }
-};
-
+  };
 const initialState = { user: null };
 
 function sessionReducer(state = initialState, action) {

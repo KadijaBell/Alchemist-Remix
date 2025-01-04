@@ -31,6 +31,11 @@ class ContentSource(db.Model):
             "media_type": self.source_type,
             "url": self.url,
             "created_at": self.created_at,
-            "updated_at": self.updated_at
+            "updated_at": self.updated_at,
+            "glances": self.glances,
+            "elixirs": self.elixirs,
+            "weighted_elixirs": self.weighted_elixirs,
+            "transmutations": self.transmutations
+            
 
         }

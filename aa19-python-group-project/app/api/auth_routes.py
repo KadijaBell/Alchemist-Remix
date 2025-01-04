@@ -26,16 +26,10 @@ def validate_password(password):
 
 @auth_routes.route('/', methods=['GET'])
 def authenticate():
-
-    print(f"User authenticated? {current_user.is_authenticated}")
-
-    print(f"Session Data: {session}")  # Debugging step
     if current_user.is_authenticated:
-        print(f"Authenticated user: {current_user}")
         return current_user.to_dict()
-    else:
-        print("No user is logged in.")
-        return {"error": "User not authenticated"}, 401
+
+    return {"error": "Unauthorized"}, 401
 
 
 
@@ -104,14 +98,9 @@ def sign_up():
 
 @auth_routes.route('/restore', methods=['GET'])
 def restore_session():
-    user_id = session.get('user_id')
-    if not user_id:
-        return jsonify({"errors": ["Unauthorized"]}), 401
-    user = User.query.get(user_id)
-    if not user:
-        return jsonify({"errors": ["User not found"]}), 404
-    return jsonify(user.to_dict()), 200
-
+    if current_user.is_authenticated:
+        return current_user.to_dict()
+    return {"errors": ["Unauthorized"]}, 401
 
 @auth_routes.route('/unauthorized')
 def unauthorized():

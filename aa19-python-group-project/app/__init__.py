@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, session, redirect, send_from_directory
+from flask import Flask,  request, session, redirect, send_from_directory
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -20,23 +20,29 @@ from werkzeug.exceptions import HTTPException
 
 
 app = Flask(__name__, static_folder='../react-vite/dist', static_url_path='/')
+app = Flask(__name__, static_folder='static')
 
 
 # Setup login manager
 login = LoginManager(app)
 login.login_view = 'auth.unauthorized'
 
-
-
 @login.user_loader
 def load_user(id):
+    print(f"Loading user with ID: {id}")
     return User.query.get(int(id))
-
 
 # Tell flask about our seed commands
 app.cli.add_command(seed_commands)
 
+# Set the path for uploaded media files
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'static/uploads')
+
+
+
 app.config.from_object(Config)
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  #16MB Maximum
 
 app.register_blueprint(user_routes, url_prefix='/api/users')
 app.register_blueprint(auth_routes, url_prefix='/api/auth')
