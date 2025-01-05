@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, URLField, SelectField, TextAreaField
+from wtforms import StringField, TextAreaField, SelectField, URLField
 from wtforms.validators import DataRequired, Length, URL, Optional
 
-class CreativeForm(FlaskForm):
+class PostForm(FlaskForm):
     title = StringField("Title", validators=[DataRequired(), Length(max=255)])
     content = TextAreaField("Content", validators=[DataRequired()])
     content_type = SelectField(
@@ -11,4 +11,3 @@ class CreativeForm(FlaskForm):
         validators=[DataRequired()],
     )
     media = URLField("Media", validators=[Optional(), URL()])
-    schedule_id = IntegerField("Schedule ID", validators=[Optional()])

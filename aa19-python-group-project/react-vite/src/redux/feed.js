@@ -17,10 +17,12 @@ const fetchFeedFailure = (error) => ({
 });
 
 
-export const fetchFeed = () => async (dispatch) => {
+export const fetchFeed = ({ search = "", page = 1, each_page = 10 }) => async (dispatch) => {
   dispatch(fetchFeedStart());
   try {
-    const response = await fetch('/api/content_sources/feed');
+    const response = await fetch(
+      `/api/content_sources/feed?search=${search}&page=${page}&each_page=${each_page}`
+    );
     if (!response.ok) {
       throw new Error('Failed to conjure your feed 🧙‍♀️. Try again soon!');
     }

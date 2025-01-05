@@ -6,6 +6,7 @@ from .reflections import seed_reflections, undo_reflections
 from .creative import seed_creatives, undo_creatives
 from .schedules import seed_schedules, undo_schedules
 from .post import seed_posts, undo_posts
+from .account_management import seed_accounts, undo_accounts
 
 from app.models.db import db, environment, SCHEMA
 
@@ -29,6 +30,7 @@ def seed():
         undo_creatives()
         undo_schedules()
         undo_posts()
+        undo_accounts()
     seed_users()
     seed_content_sources()
     seed_comments()
@@ -36,6 +38,7 @@ def seed():
     seed_creatives()
     seed_schedules()
     seed_posts()
+    seed_accounts()
 
     # Add other seed functions here
 
@@ -53,6 +56,7 @@ def undo():
     undo_creatives()
     undo_schedules()
     undo_posts()
+    undo_accounts()
 
 
     # Add other undo functions here
