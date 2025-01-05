@@ -1,5 +1,6 @@
 from app.models import db, Post, User, environment, SCHEMA
 from sqlalchemy.sql import text
+from datetime import datetime
 
 def seed_posts():
     posts = [
@@ -9,8 +10,8 @@ def seed_posts():
             'content': 'A deep dive into the cosmos and beyond.',
             'content_type': 'text',
             'media': None,
-            'created_at': '2025-01-01',
-            'updated_at': '2025-01-01',
+            'created_at': datetime.utcnow(),
+            'updated_at': datetime.utcnow(),
         },
         {
             'user_id': 2,
@@ -18,8 +19,8 @@ def seed_posts():
             'content': 'Listen to the latest updates on current events.',
             'content_type': 'audio',
             'media': 'https://www.nytimes.com/column/the-daily',
-            'created_at': '2025-01-02',
-            'updated_at': '2025-01-02',
+            'created_at': datetime.utcnow(),
+            'updated_at': datetime.utcnow(),
         },
         {
             'user_id': 3,
@@ -27,8 +28,8 @@ def seed_posts():
             'content': 'A gallery of stunning nature images.',
             'content_type': 'image',
             'media': 'https://unsplash.com/',
-            'created_at': '2025-01-03',
-            'updated_at': '2025-01-03',
+            'created_at': datetime.utcnow(),
+            'updated_at': datetime.utcnow(),
         },
         {
             'user_id': 1,
@@ -36,8 +37,8 @@ def seed_posts():
             'content': 'The latest trends in technology and innovation.',
             'content_type': 'text',
             'media': None,
-            'created_at': '2025-01-04',
-            'updated_at': '2025-01-04',
+            'created_at': datetime.utcnow(),
+            'updated_at': datetime.utcnow(),
         },
         {
             'user_id': 2,
@@ -45,8 +46,8 @@ def seed_posts():
             'content': 'Guided meditations for a calmer mind.',
             'content_type': 'audio',
             'media': 'https://revisionisthistory.com/',
-            'created_at': '2025-01-05',
-            'updated_at': '2025-01-05',
+            'created_at': datetime.utcnow(),
+            'updated_at': datetime.utcnow(),
         },
     ]
 

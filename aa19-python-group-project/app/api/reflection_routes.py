@@ -1,6 +1,8 @@
 from flask import Blueprint, jsonify, request
+from flask_login import login_required, current_user
 from app.models import db, Reflection, ContentSource
 from app.utils import get_content_source_or_404, success_response, error_response
+from app.forms.reflection_form import ReflectionForm
 
 reflection_routes = Blueprint("reflections", __name__)
 
@@ -13,35 +15,27 @@ def get_reflections():
     page = request.args.get("page", 1, type=int)
     each_page = request.args.get("each_page", 10, type=int)
     sort_by = request.args.get("sort_by", "created_at")
-    order = request.args.get("order", "desc")
-    query = Reflection.query
+    order = request.args.get("order", "desc").lower()
 
-    # Search/Sort reflections by content
-    if search:
-        query = query.filter(Reflection.content.ilike(f"%{search}%"))
-    if sort_by:
-        query = query.order_by(getattr(Reflection, sort_by))
 
     #validate sort_by
     valid_sort_by = ["created_at", "updated_at", "name"]
     if sort_by not in valid_sort_by:
         return error_response("Invalid sort field. Allowed fields: created_at, updated_at, name", 400)
 
+  # Build query
+    query = Reflection.query
 
-    # Build sorting dynamically
-    sort_column = getattr(Reflection, sort_by, None)
-    if sort_column is None:
-        return error_response("Invalid sort column", 400)
+    # Search reflections by content
+    if search:
+        query = query.filter(Reflection.content.ilike(f"%{search}%"))
 
-    if order == "asc":
-        sort_column = sort_column.asc()
-    else:
-        sort_column = sort_column.desc()
+    # Apply sorting
+    sort_column = getattr(Reflection, sort_by)
+    sort_column = sort_column.asc() if order == "asc" else sort_column.desc()
 
-    # Pagination
-    reflections = query.paginate(page=page, per_page=each_page, error_out=False)
-    # Query with sorting
-    reflections = Reflection.query.order_by(sort_column).paginate(page=page, per_page=each_page, error_out=False)
+    # Paginate results
+    reflections = query.order_by(sort_column).paginate(page=page, per_page=each_page, error_out=False)
 
     return success_response("Reflections retrieved successfully 🤗", {
         "reflections": [reflection.to_dict() for reflection in reflections.items],
@@ -62,44 +56,71 @@ def get_source_reflections(id):
         "reflections": [reflection.to_dict() for reflection in source.reflections]
     })
 
+# Get reflections by user
+@reflection_routes.route("/user/<int:user_id>/", methods=["GET"])
+def get_user_reflections(user_id):
+    page = request.args.get("page", 1, type=int)
+    each_page = request.args.get("each_page", 10, type=int)
 
+    reflections = Reflection.query.filter_by(user_id=user_id).paginate(page=page, per_page=each_page, error_out=False)
+
+    return success_response("Reflections retrieved successfully 🤗", {
+        "reflections": [reflection.to_dict() for reflection in reflections.items],
+        "total_pages": reflections.pages,
+        "page": reflections.page,
+        "each_page": each_page
+    })
 
 
 #             PUT ROUTES                #
 
 # Update/Edit a reflection
 @reflection_routes.route("/<int:id>/", methods=["PUT"])
+@login_required
 def update_reflection(id):
     reflection = Reflection.query.get(id)
     if not reflection:
-        return {"error": "Reflection not found"}, 404
+        return error_response("Reflection not found", 404)
 
-    data = request.get_json()
-    reflection.content = data.get("content")
-    db.session.commit()
-    return reflection.to_dict()
+    # Ensure the reflection belongs to the logged-in user
+    if reflection.user_id != current_user.id:
+        return error_response("Unauthorized: You cannot update this reflection.", 403)
 
+    form = ReflectionForm()
+    form.csrf_token.data = request.cookies.get("csrf_token")
+    form.user_id.data = current_user.id 
 
+    if form.validate():  # Validate the form data
+        reflection.content = form.content.data
+        db.session.commit()
+        return success_response("🪄 Reflection updated successfully.", reflection.to_dict())
+
+    return error_response("Validation failed", 400, form.errors)
 
 
 #             POST ROUTES               #
 # Add a reflection
+
 @reflection_routes.route("/<int:source_id>/", methods=["POST"])
+@login_required
 def add_reflection(source_id):
     source = get_content_source_or_404(source_id, ContentSource)
-    if isinstance(source, dict):  # Handles error response
+    if isinstance(source, dict):
         return source
 
-    data = request.get_json()
-    new_reflection = Reflection(
-        content=data.get("content"),
-        user_id=data.get("user_id"),
-        source_id=source_id
-    )
-    db.session.add(new_reflection)
-    db.session.commit()
-    return success_response("Reflection added successfully.", new_reflection.to_dict())
-
+    form = ReflectionForm()
+    form.csrf_token.data = request.cookies.get("csrf_token")
+    form.user_id.data = current_user.id
+    if form.validate():
+        new_reflection = Reflection(
+            content=form.content.data,
+            user_id=current_user.id,
+            source_id=source_id
+        )
+        db.session.add(new_reflection)
+        db.session.commit()
+        return success_response("🪄 Reflection added successfully.", new_reflection.to_dict())
+    return error_response("Validation failed", 400, form.errors)
 
 
 
@@ -109,8 +130,8 @@ def add_reflection(source_id):
 def delete_reflection(id):
     reflection = Reflection.query.get(id)
     if not reflection:
-        return {"error": "Reflection not found"}, 404
+        return error_response("Reflection not found", 404)
 
     db.session.delete(reflection)
     db.session.commit()
-    return {"message": "Reflection deleted successfully"}
+    return success_response("🗑️ Reflection deleted successfully.")

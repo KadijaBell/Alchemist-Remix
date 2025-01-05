@@ -40,3 +40,23 @@ def create_post():
 def get_posts():
     posts = Post.query.order_by(Post.created_at.desc()).all()
     return success_response("Posts retrieved successfully! 🤗", [post.to_dict() for post in posts])
+
+
+
+#     PUT ROUTES             #
+
+@post_routes.route("/<int:id>", methods=["PUT"])
+@login_required
+def update_post(id):
+    post = fetch_post(id)
+    if isinstance(post, dict):
+        return post
+
+    form = PostForm()
+    form.csrf_token.data = request.cookies.get("csrf_token")
+    form.user_id.data = current_user.id  # Automatically assign user_id
+
+    if form.validate():  # Validate the form data
+        post.title = form.title.data
+        post.content = form.content.data
+        post.content_type = form.content_type.data

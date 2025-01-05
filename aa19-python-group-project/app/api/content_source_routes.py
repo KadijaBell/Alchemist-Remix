@@ -54,16 +54,34 @@ def get_source(id):
 def search_sources():
     search = request.args.get("search", "")
     source_filter = request.args.get("type", "")
-    page = request.args.get("page", 1, type=int)
-    each_page = request.args.get("each_page", 10, type=int)
+
+    
+    try:
+        page = int(request.args.get("page", 1))
+        if page <= 0:
+            raise ValueError
+    except ValueError:
+        page = 1
+
+    try:
+        each_page = int(request.args.get("each_page", 10))
+        if each_page <= 0:
+            raise ValueError
+    except ValueError:
+        each_page = 10
+
 
     query = ContentSource.query
+
+
     if search:
         query = query.filter(ContentSource.name.ilike(f"%{search}%"))
     if source_filter:
         query = query.filter(ContentSource.source_type == source_filter)
 
+    # Pagination
     sources = query.paginate(page=page, per_page=each_page, error_out=False)
+
 
     if not sources.items:
         return success_response("No sources match your search criteria.", {
@@ -73,12 +91,14 @@ def search_sources():
             "each_page": each_page
         })
 
+    # Return paginated results
     return success_response("Sources retrieved successfully🤗", {
         "sources": [source.to_dict() for source in sources.items],
         "total_pages": sources.pages,
         "page": sources.page,
         "each_page": each_page
     })
+
 
 # POST ROUTES
 

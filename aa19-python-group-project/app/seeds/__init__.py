@@ -3,6 +3,9 @@ from .users import seed_users, undo_users
 from .content_sources import seed_content_sources, undo_content_sources
 from .comments import seed_comments, undo_comments
 from .reflections import seed_reflections, undo_reflections
+from .creative import seed_creatives, undo_creatives
+from .schedules import seed_schedules, undo_schedules
+from .post import seed_posts, undo_posts
 
 from app.models.db import db, environment, SCHEMA
 
@@ -20,10 +23,20 @@ def seed():
         # the schema name (see comment in users.py undo_users function).
         # Make sure to add all your other model's undo functions below
         undo_users()
+        undo_content_sources()
+        undo_comments()
+        undo_reflections()
+        undo_creatives()
+        undo_schedules()
+        undo_posts()
     seed_users()
     seed_content_sources()
     seed_comments()
     seed_reflections()
+    seed_creatives()
+    seed_schedules()
+    seed_posts()
+
     # Add other seed functions here
 
 
@@ -34,5 +47,12 @@ def undo():
     undo_content_sources()
     undo_comments()
     undo_reflections()
+    undo_comments()
+    undo_content_sources()
+    undo_reflections()
+    undo_creatives()
+    undo_schedules()
+    undo_posts()
+
 
     # Add other undo functions here
