@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 from app.models import db, ContentSource
 from app.utils import validate_url, error_response, success_response
-
+from flask_login import login_required
+import cloudinary.uploader
 content_source_routes = Blueprint("content_sources", __name__)
 
 # Helper function to fetch content source
@@ -11,9 +12,12 @@ def fetch_content_source(id):
         return error_response("🥲 That creative content can't be found. Please try again.", 404)
     return source
 
-# GET ROUTES
+#                   GET ROUTES                   #
+
+
 
 @content_source_routes.route("/feed", methods=["GET"])
+@login_required
 def get_feed():
     try:
         page = int(request.args.get("page", 1))
@@ -27,7 +31,7 @@ def get_feed():
     return success_response(
         "Feed retrieved successfully! 🤗",
         {
-            "sources": [source.to_dict() for source in sources.items],
+            "sources": [source.to_dict() for source in sources.items] if sources.items else [],
             "page": sources.page,
             "each_page": each_page,
             "total_pages": sources.pages,
@@ -55,7 +59,7 @@ def search_sources():
     search = request.args.get("search", "")
     source_filter = request.args.get("type", "")
 
-    
+
     try:
         page = int(request.args.get("page", 1))
         if page <= 0:
@@ -100,7 +104,7 @@ def search_sources():
     })
 
 
-# POST ROUTES
+#                   POST ROUTES              #
 
 @content_source_routes.route("/", methods=["POST"])
 def create_source():
@@ -170,7 +174,27 @@ def share_source(id):
     db.session.commit()
     return success_response("🔄Content transmuted!🛸", {"total_transmutations": source.transmutations})
 
-# PUT ROUTES
+
+@content_source_routes.route("/upload", methods=["POST"])
+def upload_source():
+    if "file" not in request.files:
+        return jsonify({"error": "No file part"}), 400
+
+    file = request.files["file"]
+
+    upload_result = cloudinary.uploader.upload(file)
+
+    new_source = ContentSource(
+        name=request.form.get("name"),
+        source_type=request.form.get("type"),
+        url=upload_result["secure_url"],
+    )
+    db.session.add(new_source)
+    db.session.commit()
+
+    return jsonify(new_source.to_dict()), 201
+
+#                   PUT ROUTES                  #
 
 @content_source_routes.route("/<int:id>", methods=["PUT"])
 def update_source(id):

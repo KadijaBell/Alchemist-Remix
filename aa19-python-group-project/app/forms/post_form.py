@@ -1,13 +1,40 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SelectField, URLField
-from wtforms.validators import DataRequired, Length, URL, Optional
+from wtforms import StringField, TextAreaField, SelectField, FileField, URLField
+from wtforms.validators import DataRequired, Length, URL, Optional, ValidationError
 
 class PostForm(FlaskForm):
-    title = StringField("Title", validators=[DataRequired(), Length(max=255)])
-    content = TextAreaField("Content", validators=[DataRequired()])
+    title = StringField("title", validators=[DataRequired(), Length(max=255)])
+    content = TextAreaField("content", validators=[DataRequired()])
     content_type = SelectField(
-        "Content Type",
-        choices=[("Text", "Text"), ("Image", "Image"), ("Audio", "Audio")],
+        "content_type",
+        choices=[
+            ("Text", "Text"),
+            ("Podcast", "Podcast"),
+            ("Video", "Video"),
+            ("Image", "Image"),
+            ("Audio", "Audio"),
+            ("Article", "Article"),
+            ("Link", "Link"),
+            ("Book", "Book"),
+            ("Other", "Other"),
+        ],
         validators=[DataRequired()],
     )
-    media = URLField("Media", validators=[Optional(), URL()])
+    media = FileField("media", validators=[Optional()])
+    url = URLField("url", validators=[Optional(), URL()])
+    csrf_token = StringField('csrf_token')
+
+    def validate_content_type(form, field):
+        valid_content_types = [
+            "Text",
+            "Podcast",
+            "Video",
+            "Image",
+            "Audio",
+            "Article",
+            "Link",
+            "Book",
+            "Other",
+        ]
+        if field.data not in valid_content_types:
+            raise ValidationError("Invalid content type.")

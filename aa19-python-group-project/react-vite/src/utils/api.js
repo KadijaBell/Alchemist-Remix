@@ -1,3 +1,5 @@
+
+
 import { getCSRFToken } from "./csrf";
 
 export async function apiFetch(url, method = "GET", body = null) {
@@ -7,7 +9,7 @@ export async function apiFetch(url, method = "GET", body = null) {
       "Content-Type": "application/json",
       "X-CSRFToken": getCSRFToken(),
     },
-    
+
   };
 
   if (body) {

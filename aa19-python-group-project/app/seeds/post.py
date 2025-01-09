@@ -6,6 +6,7 @@ def seed_posts():
     posts = [
         {
             'user_id': 1,
+            'source_id':1,
             'title': 'Exploring the Universe',
             'content': 'A deep dive into the cosmos and beyond.',
             'content_type': 'text',
@@ -15,6 +16,7 @@ def seed_posts():
         },
         {
             'user_id': 2,
+            'source_id':1,
             'title': 'Morning Podcast',
             'content': 'Listen to the latest updates on current events.',
             'content_type': 'audio',
@@ -24,6 +26,7 @@ def seed_posts():
         },
         {
             'user_id': 3,
+            'source_id':1,
             'title': 'Nature Photography',
             'content': 'A gallery of stunning nature images.',
             'content_type': 'image',
@@ -33,6 +36,7 @@ def seed_posts():
         },
         {
             'user_id': 1,
+            'source_id':1,
             'title': 'Tech Trends 2025',
             'content': 'The latest trends in technology and innovation.',
             'content_type': 'text',
@@ -42,6 +46,7 @@ def seed_posts():
         },
         {
             'user_id': 2,
+            'source_id':1,
             'title': 'Meditation Podcast',
             'content': 'Guided meditations for a calmer mind.',
             'content_type': 'audio',
@@ -57,6 +62,7 @@ def seed_posts():
             title=post['title'],
             content=post['content'],
             content_type=post['content_type'],
+            source_id=post['source_id'],
             media=post['media'],
             created_at=post['created_at'],
             updated_at=post['updated_at']

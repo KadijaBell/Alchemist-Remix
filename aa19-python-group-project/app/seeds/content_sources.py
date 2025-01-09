@@ -5,6 +5,7 @@ from sqlalchemy.sql import text
 def seed_content_sources():
     content_sources = [
         {
+            
             'name': 'The New York Times',
             'source_type': 'Newspaper',
             'url': 'https://www.nytimes.com/'

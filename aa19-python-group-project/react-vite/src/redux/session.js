@@ -9,9 +9,6 @@ const setUser = (user) => ({
 const removeUser = () => ({
   type: REMOVE_USER
 });
-
-
-
 // export const thunkAuthenticate = () => async (dispatch) => {
 // 	// const response = await fetch("/api/auth/");
 // 	// if (response.ok) {
@@ -77,7 +74,7 @@ export const thunkAuthenticate = () => async (dispatch) => {
   try {
     const response = await fetch("/api/auth/", {
       method: "GET",
-      credentials: "include", // Include cookies
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -87,7 +84,7 @@ export const thunkAuthenticate = () => async (dispatch) => {
     }
 
     const data = await response.json();
-    console.log("Authentication response:", data); // Debugging step
+    console.log("Authentication response:", data);
 
     if (data.user) {
       dispatch(setUser(data.user));

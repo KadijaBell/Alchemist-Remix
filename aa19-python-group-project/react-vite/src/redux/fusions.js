@@ -27,8 +27,8 @@ export const fetchFusions = () => async (dispatch) => {
             throw new Error('Failed to fetch fusions');
         }
         const data = await response.json();
-        // Map backend 'fusions' to Redux 'list'
-        dispatch(fetchFusionsSuccess(data.fusions || []));
+
+        dispatch(fetchFusionsSuccess(data.fusions|| []));
     } catch (error) {
         dispatch(fetchFusionsFailure(error.message));
     }

@@ -11,11 +11,12 @@ import feedReducer from "./feed";
 import postsReducer from "./posts";
 
 
+
 const rootReducer = combineReducers({
   session: sessionReducer,
   fussions: fussionsReducer,
   feed: feedReducer,
-  posts:postsReducer
+  posts:postsReducer,
 });
 
 let enhancer;

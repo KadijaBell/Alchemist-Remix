@@ -18,9 +18,10 @@ class ContentSource(db.Model):
     transmutations = db.Column(db.Integer, default=0)
 
 
-
+    #relations
     comments = db.relationship('Comment', back_populates='source', cascade="all, delete-orphan")
     reflections = db.relationship('Reflection', back_populates='source', cascade="all, delete-orphan")
+    posts = db.relationship('Post', back_populates='content_source', cascade="all, delete-orphan")
 
 
 
@@ -35,7 +36,6 @@ class ContentSource(db.Model):
             "glances": self.glances,
             "elixirs": self.elixirs,
             "weighted_elixirs": self.weighted_elixirs,
-            "transmutations": self.transmutations
-            
-
+            "transmutations": self.transmutations,
+            "posts": [post.to_dict() for post in self.posts]
         }
