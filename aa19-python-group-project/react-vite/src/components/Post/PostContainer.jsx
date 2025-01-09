@@ -25,7 +25,7 @@ import './PostContainer.css';
       {/* {renderPreview()} */}
         <h2>{post.title || "Untitled"}</h2>
         <p>{post.content || "No content available."}</p>
-        <p>{post.content_type && <p>Content Type: {post.content_type}</p>}</p>
+        <p>{post.content_type && <span>Content Type: {post.content_type}</span>}</p>
         <a href={post.url} target="_blank" rel="noreferrer">
         Visit Source
       </a>

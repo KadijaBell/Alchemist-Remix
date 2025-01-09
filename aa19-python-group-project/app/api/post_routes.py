@@ -32,7 +32,7 @@ def get_posts():
 @login_required
 def create_post():
     form = PostForm()
-    form["csrf_token"].data = request.cookies["csrf_token"]
+  
 
     if form.validate_on_submit():
         new_post = Post(

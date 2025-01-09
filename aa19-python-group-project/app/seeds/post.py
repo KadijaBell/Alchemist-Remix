@@ -15,7 +15,7 @@ def seed_posts():
             'updated_at': datetime.utcnow(),
         },
         {
-            'user_id': 2,
+            'user_id': 1,
             'source_id':1,
             'title': 'Morning Podcast',
             'content': 'Listen to the latest updates on current events.',
@@ -25,7 +25,7 @@ def seed_posts():
             'updated_at': datetime.utcnow(),
         },
         {
-            'user_id': 3,
+            'user_id': 1,
             'source_id':1,
             'title': 'Nature Photography',
             'content': 'A gallery of stunning nature images.',
@@ -45,7 +45,7 @@ def seed_posts():
             'updated_at': datetime.utcnow(),
         },
         {
-            'user_id': 2,
+            'user_id': 1,
             'source_id':1,
             'title': 'Meditation Podcast',
             'content': 'Guided meditations for a calmer mind.',
@@ -69,8 +69,8 @@ def seed_posts():
         )
 
 
-    db.session.add(new_post)
-    db.session.commit()
+        db.session.add(new_post)
+        db.session.commit()
     return posts
 
 def undo_posts():

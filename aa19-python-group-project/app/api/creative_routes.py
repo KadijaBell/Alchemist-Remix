@@ -19,7 +19,6 @@ def get_creatives():
 @login_required
 def create_creative():
     form = CreativeForm()
-    form["csrf_token"].data = request.cookies["csrf_token"]
 
     if form.validate_on_submit():
         schedule = Schedule.query.get(form.schedule_id.data)

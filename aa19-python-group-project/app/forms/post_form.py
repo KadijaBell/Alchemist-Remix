@@ -22,7 +22,7 @@ class PostForm(FlaskForm):
     )
     media = FileField("media", validators=[Optional()])
     url = URLField("url", validators=[Optional(), URL()])
-    csrf_token = StringField('csrf_token')
+
 
     def validate_content_type(form, field):
         valid_content_types = [

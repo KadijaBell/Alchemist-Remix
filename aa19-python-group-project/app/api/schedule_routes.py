@@ -19,7 +19,7 @@ def get_schedules():
 @login_required
 def create_schedule():
     form = ScheduleForm()
-    form["csrf_token"].data = request.cookies["csrf_token"]
+    
 
     if form.validate_on_submit():
         new_schedule = Schedule(

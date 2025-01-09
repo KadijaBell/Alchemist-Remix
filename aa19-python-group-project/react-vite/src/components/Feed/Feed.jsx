@@ -7,7 +7,8 @@ import "./Feed.css";
 
 function Feed() {
   const dispatch = useDispatch();
-  const { list: posts, status, error, total_pages } = useSelector((state) => state.posts);
+  const { list: posts, status, error, total_pages } = useSelector((state) => state.feed);
+  console.log(posts)
   const user = useSelector((state) => state.session.user);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
@@ -54,7 +55,7 @@ function Feed() {
       <h1>Your Alchemy Feed</h1>
       <button className="create-post-button" onClick={() => navigate("/create")}> + Create Post </button>
       <div className="posts-list">
-        {posts.map((post) => (
+        {posts?.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}
       </div>
@@ -72,4 +73,3 @@ function Feed() {
 }
 
 export default Feed;
-

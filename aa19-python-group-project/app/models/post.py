@@ -35,5 +35,5 @@ class Post(db.Model):
             'updated_at': self.updated_at,
             'user': self.user.to_dict(),
             'comments': [comment.to_dict() for comment in self.comments],
-            'source_id': self.feed_id
+            'source_id': self.source_id
         }

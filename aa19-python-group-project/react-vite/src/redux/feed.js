@@ -16,11 +16,11 @@ const fetchFeedFailure = (error) => ({
   payload: error,
 });
 
-export const fetchFeed = ({ search = "", page = 1, each_page = 10 } = {}) => async (dispatch) => {
+export const fetchFeed = ({ page = 1, each_page = 10 } = {}) => async (dispatch) => {
   dispatch(fetchFeedStart());
   try {
     const response = await fetch(
-      `/api/content_sources/feed?search=${search}&page=${page}&each_page=${each_page}`,
+      `/api/content_sources/feed?page=${page}&each_page=${each_page}`,
       { credentials: "include" }
     );
     if (!response.ok) {
@@ -28,7 +28,7 @@ export const fetchFeed = ({ search = "", page = 1, each_page = 10 } = {}) => asy
     }
     const data = await response.json();
     console.log("Fetched Feed Data:", data);
-    dispatch(fetchFeedSuccess(data.source || []));
+    dispatch(fetchFeedSuccess(data.data) || []);
   } catch (error) {
     console.error("Feed Fetch Error:", error.message);
     dispatch(fetchFeedFailure(error.message));
@@ -44,14 +44,16 @@ const initialState = {
 
 function feedReducer(state = initialState, action) {
   switch (action.type) {
-    case FETCH_FEED_SUCCESS:
+    case FETCH_FEED_SUCCESS:{
       console.log("Payload:", action.payload);
+
       return {
         ...state,
         status: "succeeded",
-        list: action.payload.posts || [],
-        total_pages: action.payload.total_pages || 0,
+        list: action.payload.sources.flatMap((source) => source.posts || []), // Flatten posts from all sources
+        total_pages: action.payload.total_pages || 0// Start with 0 as the default max
       };
+    }
     default:
       return state;
   }

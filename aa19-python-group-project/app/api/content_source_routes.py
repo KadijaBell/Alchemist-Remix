@@ -20,23 +20,28 @@ def fetch_content_source(id):
 @login_required
 def get_feed():
     try:
-        page = int(request.args.get("page", 1))
-        each_page = int(request.args.get("each_page", 10))
-        if page < 1 or each_page < 1:
-            raise ValueError
-    except ValueError:
-        page, each_page = 1, 10  # Default to valid values
+        print("Hit this route...")
+        try:
+            page = int(request.args.get("page", 1))
+            each_page = int(request.args.get("each_page", 10))
+            if page < 1 or each_page < 1:
+                raise ValueError
+        except ValueError:
+            page, each_page = 1, 10  # Default to valid values
 
-    sources = ContentSource.query.paginate(page=page, per_page=each_page, error_out=False)
-    return success_response(
-        "Feed retrieved successfully! 🤗",
-        {
-            "sources": [source.to_dict() for source in sources.items] if sources.items else [],
-            "page": sources.page,
-            "each_page": each_page,
-            "total_pages": sources.pages,
-        },
-    )
+        sources = ContentSource.query.paginate(page=page, per_page=each_page, error_out=False)
+        return success_response(
+            "Feed retrieved successfully! 🤗",
+            {
+                "sources": [source.to_dict() for source in sources.items] if sources.items else [],
+                "page": sources.page,
+                "each_page": each_page,
+                "total_pages": sources.pages,
+            },
+        )
+    except Exception as E:
+        print({"error": f"ERROR in /feed route: {(E)}"})
+        return jsonify({"error": f"ERROR in /feed route: {(E)}"}), 500
 
 
 @content_source_routes.route("/<int:id>", methods=["GET"])
